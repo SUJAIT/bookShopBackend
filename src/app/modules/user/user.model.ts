@@ -3,6 +3,8 @@ import { Schema, model } from 'mongoose';
 import bcrypt from 'bcrypt';
 import { IUser } from './user.interface';
 import config from '../../config';
+import { UserStatus } from './user.constant';
+
 
 
 const UserSchema = new Schema<IUser>({
@@ -15,6 +17,15 @@ const UserSchema = new Schema<IUser>({
         type: String,
         required: true,
         unique: true
+    },
+    role: {
+        type: String,
+        enum: ["admin" , "client"],
+    },
+    status: {
+        type: String,
+        enum: UserStatus,
+        default: 'in-progress'
     },
     password: {
         type: String,
@@ -56,11 +67,11 @@ UserSchema.post('save', function (doc, next) {
 
 // ++++
 
-UserSchema.statics.isPasswordMatched = async function(
+UserSchema.statics.isPasswordMatched = async function (
     plainTextPassword,
     hashPassword,
-){
-    return await bcrypt.compare(plainTextPassword,hashPassword)
+) {
+    return await bcrypt.compare(plainTextPassword, hashPassword)
 }
 
 // ----
@@ -69,11 +80,11 @@ UserSchema.statics.isPasswordMatched = async function(
 UserSchema.statics.isJWTIssuedBeforePasswordChanged = function (
     passwordChangedTimestamp: Date,
     jwtIssuedTimestamp: number,
-  ) {
+) {
     const passwordChangedTime =
-      new Date(passwordChangedTimestamp).getTime() / 1000;
+        new Date(passwordChangedTimestamp).getTime() / 1000;
     return passwordChangedTime > jwtIssuedTimestamp;
-  };
+};
 // ----
 
-export const User = model<IUser>('User',UserSchema);
+export const User = model<IUser>('User', UserSchema);

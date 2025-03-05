@@ -5,12 +5,12 @@ import { UserServices } from "./user.services";
 
 // ++++createUser
 const createUser = catchAsync(async (req, res) => {
-    const { password, ...userData } = req.body;
+    const { password, ...clientData } = req.body;
 
-    const result = await UserServices.createUser(
+    const result = await UserServices.createClientUser(
         // req.file, 
         password,
-        userData
+        clientData
     );
     // ----result
     sendResponse(res, {
@@ -23,7 +23,28 @@ const createUser = catchAsync(async (req, res) => {
 })
 // ---- createUSer
 
+// ++++createAdminUser
+const createAdminUser = catchAsync(async (req, res) => {
+    const { password, ...clientData } = req.body;
+
+    const result = await UserServices.createAdminUser(
+        // req.file, 
+        password,
+        clientData
+    );
+    // ----result
+    sendResponse(res, {
+        statusCode: status.CREATED,
+        success: true,
+        message: "User created successfully",
+        data: result,
+    });
+    // ----sendResponse
+})
+// ---- createAdminUser
+
 
 export const userController = {
-    createUser
+    createUser,
+    createAdminUser
 }

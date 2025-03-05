@@ -9,5 +9,9 @@ router.post(
     '/create-user',
     userController.createUser
 )
+router.post(
+    '/create-admin',
+    userController.createAdminUser
+)
 
 export const UserRoutes = router;

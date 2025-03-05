@@ -2,9 +2,9 @@ import mongoose from "mongoose";
 import { IUser } from "./user.interface"
 import { User } from "./user.model";
 
-// ++++
+// ++++client
 // this createUser uses transaction roll-back
-const createUser = async (
+const createClientUser = async (
     // file: any, img patanur time a lagba
     password: string,
     payload: IUser
@@ -14,19 +14,22 @@ const createUser = async (
 
     try {
         // create a user object<
-        const userData: IUser = {
+        const clientUserData: IUser = {
             userName: payload.userName,
             email: payload.email,
             password: password,
+            role: "client",  
+            status: "in-progress", 
+            
         };
         // svae user 
-        const newUser = new User(userData);
-        await newUser.save({ session });
+        const clientNewUser = new User(clientUserData);
+        await clientNewUser.save({ session });
 
         // commit transaction 
         await session.commitTransaction();
         session.endSession();
-        return { message: "User Registered Success fully", user: newUser };
+        return { message: "User Registered Success fully", user: clientNewUser };
     } catch (error) {
         await session.abortTransaction(); // Rollback transaction if an error occurs
         session.endSession();
@@ -34,8 +37,45 @@ const createUser = async (
     }
     //try-end
 }
-// ----
+// ----client
+
+// ++++admin
+const createAdminUser = async (
+    // file: any, img patanur time a lagba
+    password: string,
+    payload: IUser
+) => {
+    const session = await mongoose.startSession();
+    session.startTransaction();
+
+    try {
+        // create a user object<
+        const adminData: IUser = {
+            userName: payload.userName,
+            email: payload.email,
+            password: password,
+            role: "admin",  
+            status: "in-progress", 
+            
+        };
+        // svae user 
+        const newAdminUser = new User(adminData);
+        await newAdminUser.save({ session });
+
+        // commit transaction 
+        await session.commitTransaction();
+        session.endSession();
+        return { message: "User Registered Success fully", user: newAdminUser };
+    } catch (error) {
+        await session.abortTransaction(); // Rollback transaction if an error occurs
+        session.endSession();
+        throw error;
+    }
+    //try-end
+}
+// ----admin
 
 export const UserServices = {
-    createUser
+    createClientUser,
+    createAdminUser
 }

@@ -1,3 +1,5 @@
 mdsujait2004
 
 05bxRcanCgBUEGHJ
+
+JWT-String Create : node -e "console.log(require('crypto').randomBytes(64).toString('hex'))"
