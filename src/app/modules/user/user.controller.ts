@@ -25,12 +25,12 @@ const createUser = catchAsync(async (req, res) => {
 
 // ++++createAdminUser
 const createAdminUser = catchAsync(async (req, res) => {
-    const { password, ...clientData } = req.body;
+    const { password, ...adminData } = req.body;
 
     const result = await UserServices.createAdminUser(
         // req.file, 
         password,
-        clientData
+        adminData
     );
     // ----result
     sendResponse(res, {
