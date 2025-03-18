@@ -52,6 +52,7 @@ ShopSchema.methods.addOrUpdateReview = async function (userId: string, comment: 
         this.reviews.push({user: userId,comment,rating})
     }
     await this.calculateRating()
+    
 }
 //Add or Updating Function ----
 
