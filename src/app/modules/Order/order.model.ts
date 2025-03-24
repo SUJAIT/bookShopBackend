@@ -26,9 +26,9 @@ const OrderSchema = new Schema<IOrder>(
             type:String,
             enum: ["pending","completed","canceled"],
             default: "pending"
-        }
-
-
+        },
+        paymentStatus: { type: String, enum: ["pending", "paid", "failed"], default: "pending" },
+        paymentIntentId: { type: String }
     },
 {timestamps: true}
 )

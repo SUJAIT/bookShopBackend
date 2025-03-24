@@ -7,8 +7,9 @@ import { OrderService } from "./order.service";
 
 const buyProduct = catchAsync(async (req: Request, res: Response) =>{
     const {userId, productId,quantity} = req.body;
+    console.log(req.body)
     try{
-        const order = await OrderService.buyProduct(userId,productId,quantity);
+        const order = await OrderService.OrderProduct(userId,productId,quantity);
 
         sendResponse(res, {
             statusCode:status.OK,

@@ -4,14 +4,16 @@ import { User } from "../user/user.model"
 import { Order } from "./order.model";
 
 
-const buyProduct = async (userId: string, productId: string, quantity: number) => {
+const OrderProduct = async (userId: string, productId: string, quantity: number) => {
 
     // Start Transaction-roll-back
+
     const session = await mongoose.startSession();
     session.startTransaction();
 
     try {
         const user = await User.findById(userId).session(session);
+        
         // if user exists
         if (!user) {
             throw new Error("User Not found");
@@ -45,11 +47,14 @@ const buyProduct = async (userId: string, productId: string, quantity: number) =
         // every transaction is successful
         await session.commitTransaction();
 
+       
         //end session of transaction
         session.endSession()
+ // ✅ Populate user details (name, email)
+        const populateOrderDetails = await Order.findById(order[0]._id).populate("user","userName email")
 
 
-        return order;
+        return populateOrderDetails;
     } catch (error) {
         await session.abortTransaction();
         session.endSession();
@@ -59,5 +64,5 @@ const buyProduct = async (userId: string, productId: string, quantity: number) =
 }
 
 export const OrderService = {
-    buyProduct
+    OrderProduct
 }
